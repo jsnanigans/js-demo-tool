@@ -1,3 +1,3 @@
 import log from "../lib/log"
 
-log("Hello")
+log("Hello 03")
