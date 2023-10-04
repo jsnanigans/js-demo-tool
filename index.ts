@@ -8,14 +8,22 @@ import chalk from 'chalk';
 import {highlight} from 'cli-highlight';
 
 const args = process.argv.slice(2);
-const file = args[0];
+const filePattern = args[0];
 const dir = './topics'
 
-if (!file) {
-  console.log('Usage: node index.js <directory> <file>');
+if (!filePattern) {
+  console.log('missing file pattern');
   process.exit(1);
 }
 
+const files = fs.readdirSync(dir);
+// fuzzy find file
+const file = files.find(f => f.includes(filePattern));
+
+if (!file) {
+  console.log('no file found');
+  process.exit(1);
+}
 
 const watcher = chokidar.watch(dir, {
   ignored: /(^|[\/\\])\../,
@@ -23,7 +31,8 @@ const watcher = chokidar.watch(dir, {
 });
 
 function printHeader() {
-  console.log(`${chalk.bgCyan(Date.now())} ${chalk.green(file)}`);
+  const time = new Date().toLocaleTimeString();
+  console.log(`${chalk.bgCyan(time)} ${chalk.green(file)}`);
   console.log();
 }
 

@@ -1,13 +1,23 @@
-export default function log(arg: any) {
-  let o = arg;
-  const protName = arg?.constructor?.prototype?.constructor?.name
+import { isModuleNamespaceObject } from "util/types";
 
-  const header = (`${protName} ${':'}`)
+export default function log(arg1: any, name: string = '') {
+  let o = arg1;
+  const protName = o?.constructor?.prototype?.constructor?.name
 
-  // remove not-enumerable props from o
+  const headerName = name ? `"${name}" ` : ''
+  const header = (`${protName} ${headerName}:`)
+
+  // add missing enumerable properties
   if (o && typeof o === 'object') {
-    o = Object.assign({}, o);
+    const copy = Object.assign({}, o)
+
+    for (const key in o) {
+      copy[key] = o[key]
+    }
+
+    o = copy
   }
 
   console.log(header, o)
+  console.log()
 }
